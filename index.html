@@ -65,7 +65,7 @@ p{margin:0}
 /* ---------- stage backgrounds (all drawn in CSS, all original) ---------- */
 .bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:
   radial-gradient(120% 80% at 50% -10%,#241b48 0%,#0b0817 60%);}
-.bg .orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;will-change:transform}
+.bg .orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.28;will-change:transform}.bg .photo{position:absolute;inset:0;background-position:center;background-size:cover;opacity:0;transform:scale(1.025);transition:opacity 1.4s ease,transform 15s linear}.bg .photo.active{opacity:.46;transform:scale(1)}
 .bg .orb.a{width:60vmax;height:60vmax;left:-18vmax;top:-16vmax;background:radial-gradient(circle,#ff5c93 0%,transparent 62%);animation:drift-a 26s ease-in-out infinite alternate}
 .bg .orb.b{width:52vmax;height:52vmax;right:-16vmax;top:4vmax;background:radial-gradient(circle,#7a5cff 0%,transparent 64%);animation:drift-b 31s ease-in-out infinite alternate}
 .bg .orb.c{width:46vmax;height:46vmax;left:24vmax;bottom:-24vmax;background:radial-gradient(circle,#6ef2c6 0%,transparent 62%);opacity:.28;animation:drift-c 37s ease-in-out infinite alternate}
@@ -179,13 +179,13 @@ p{margin:0}
 .progress-meta{font-size:12.5px;color:var(--muted);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .progress-meta b{color:var(--text-soft);font-variant-numeric:tabular-nums}
 
-.practice-wrap{position:relative;min-height:132px;display:flex;align-items:center;justify-content:center;padding:6px 4px;border-radius:var(--r-md);background:radial-gradient(80% 120% at 50% 50%,rgba(255,92,147,.07),transparent 70%);min-width:0}
+.practice-wrap{position:relative;min-height:88px;display:flex;align-items:center;justify-content:center;padding:6px 4px;border-radius:var(--r-md);background:radial-gradient(80% 120% at 50% 50%,rgba(255,92,147,.07),transparent 70%);min-width:0}
 .practice{font-family:var(--font-mono);font-size:min(var(--practice-size,34px),var(--fit-size,34px));font-weight:500;line-height:1.5;letter-spacing:.01em;text-align:center;max-width:100%;overflow-wrap:break-word;word-break:normal}
 .word{display:inline-block;white-space:nowrap}
 .ch{position:relative;display:inline-block;color:var(--text-soft);transition:color .12s,transform .12s}
 .ch.done{color:var(--accent-2);opacity:.9}
 .ch.cur{color:var(--text);background:var(--accent-soft);border-radius:5px;box-shadow:inset 0 -3px 0 var(--accent);animation:caret 1.15s steps(2,end) infinite}
-.ch.cur.space{background:var(--accent-soft);box-shadow:inset 0 -3px 0 var(--accent);min-width:.62em}
+.ch.cur.space{background:var(--accent-soft);box-shadow:inset 0 -3px 0 var(--accent);min-width:3.2em;height:1.05em;vertical-align:middle}.ch.cur.space::after{content:"SPACE";display:inline-block;color:var(--accent);font:700 .48em/1 var(--font-body);letter-spacing:.12em;vertical-align:middle}
 .ch.space{display:inline-block;width:.62em}
 .ch.pop{animation:pop .28s ease-out}
 .ch.miss{color:var(--bad);animation:shake .28s ease}
@@ -226,7 +226,7 @@ p{margin:0}
 .key.lit{background:var(--ink-4);color:var(--text);border-color:var(--line-strong)}
 
 .hands{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-.hand .finger{fill:rgba(198,178,255,.22);stroke:rgba(233,225,255,.55);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round;transition:fill .16s,stroke .16s}
+.hand .finger{fill:rgba(215,195,255,.25);stroke:rgba(242,233,255,.62);stroke-width:1.2;vector-effect:non-scaling-stroke;stroke-linejoin:round;transition:fill .16s,stroke .16s;filter:drop-shadow(0 1px 1px rgba(4,2,14,.35))}
 .hand .palm{fill:rgba(198,178,255,.20);stroke:rgba(233,225,255,.48);stroke-width:1;vector-effect:non-scaling-stroke}
 .hand .finger.on{fill:rgba(110,242,198,.45);stroke:rgba(160,255,228,1);stroke-width:2.2}
 .hand .tipdot{fill:none;stroke:rgba(110,242,198,0);stroke-width:2;vector-effect:non-scaling-stroke;transition:stroke .16s,r .16s}
@@ -347,7 +347,7 @@ input[type="range"]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;b
 }
 @media (max-width:520px){
   .level-grid{grid-template-columns:1fr}
-  .practice-wrap{min-height:96px;padding-block:2px}
+  .practice-wrap{min-height:72px;padding-block:2px}
   .game-stats{width:100%;gap:6px}
   .game-stats .stat{flex:1 1 0;min-width:0;padding:4px 7px 5px}
   .stat .k{font-size:8.5px;letter-spacing:.06em}
@@ -372,7 +372,7 @@ input[type="range"]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;b
 </style>
  </head>
 <body>
-<div class="bg" aria-hidden="true"><span class="orb a"></span><span class="orb b"></span><span class="orb c"></span></div>
+<div class="bg" aria-hidden="true"><span class="photo" id="backdrop-a"></span><span class="photo" id="backdrop-b"></span><span class="orb a"></span><span class="orb b"></span><span class="orb c"></span></div>
 <div class="veil" aria-hidden="true"></div>
 
 <div class="app">
@@ -503,8 +503,6 @@ input[type="range"]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;b
         <div class="practice" id="practice" aria-live="polite" aria-atomic="true"></div>
       </div>
 
-      <div class="hint-row" id="hint-row"></div>
-
       <div class="typed-strip" aria-hidden="true">
         <span><span class="lab">Next</span> <span class="val next-char" id="next-char">f</span></span>
         <span><span class="lab">Typed</span> <span class="val" id="typed-val">—</span></span>
@@ -514,6 +512,8 @@ input[type="range"]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;b
         <div class="kb" id="kb"></div>
         <svg class="hands" id="hands" viewBox="0 0 1000 366" preserveAspectRatio="none" aria-hidden="true"></svg>
       </div>
+
+      <div class="hint-row" id="hint-row"></div>
 
       <div class="kb-legend" aria-hidden="true">
         <span><i class="legend-target"></i> Press this key</span>
@@ -1187,16 +1187,17 @@ function fingerShape(fid, w){
 /* capsule between two points, round at both ends */
 function capsule(x1, y1, x2, y2, w){
   const f = (n)=>n.toFixed(3);
-  const dx = x2 - x1, dy = y2 - y1;
-  const len = Math.hypot(dx, dy) || 0.001;
-  const nx = -dy / len, ny = dx / len;
-  const r = w / 2;
-  const a1 = [x1 + nx*r, y1 + ny*r], b1 = [x1 - nx*r, y1 - ny*r];
-  const a2 = [x2 + nx*r, y2 + ny*r], b2 = [x2 - nx*r, y2 - ny*r];
-  return `M ${f(a1[0])} ${f(a1[1])} L ${f(a2[0])} ${f(a2[1])} ` +
-         `A ${f(r)} ${f(r)} 0 0 1 ${f(b2[0])} ${f(b2[1])} ` +
-         `L ${f(b1[0])} ${f(b1[1])} ` +
-         `A ${f(r)} ${f(r)} 0 0 1 ${f(a1[0])} ${f(a1[1])} Z`;
+  const dx=x2-x1, dy=y2-y1, len=Math.hypot(dx,dy)||0.001;
+  const nx=-dy/len, ny=dx/len, r=w/2;
+  const p=(t,offset)=>[x1+dx*t+nx*offset,y1+dy*t+ny*offset];
+  const a=p(0,-r*.82), b=p(0,r*.82);
+  const l1=p(.27,-r*.96), l2=p(.62,-r*.86), l3=p(.82,-r*.64);
+  const t1=p(.98,-r*.54), t2=p(1.08,-r*.28), tip=p(1.08,0),
+        t3=p(1.08,r*.28), t4=p(.98,r*.54), r3=p(.82,r*.64), r2=p(.62,r*.86), r1=p(.27,r*.96);
+  return "M "+f(a[0])+" "+f(a[1])+" C "+f(l1[0])+" "+f(l1[1])+", "+f(l2[0])+" "+f(l2[1])+", "+f(l3[0])+" "+f(l3[1])+" "+
+    "C "+f(t1[0])+" "+f(t1[1])+", "+f(t2[0])+" "+f(t2[1])+", "+f(tip[0])+" "+f(tip[1])+" "+
+    "C "+f(t3[0])+" "+f(t3[1])+", "+f(t4[0])+" "+f(t4[1])+", "+f(r3[0])+" "+f(r3[1])+" "+
+    "C "+f(r2[0])+" "+f(r2[1])+", "+f(r1[0])+" "+f(r1[1])+", "+f(b[0])+" "+f(b[1])+" Z";
 }
 
 /* key centres in keyboard units, filled once ROWS exists.
@@ -2224,6 +2225,28 @@ function bindUI(){
   });
 }
 
+/* ---------- rotating music photography ---------- */
+const BACKDROP_IMAGES=[
+  "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=2000&q=85",
+  "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=2000&q=85",
+  "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=2000&q=85",
+  "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=2000&q=85"
+];
+let backdropIndex=-1, activeBackdropLayer=0;
+function startBackdropRotation(){
+  const layers=[$("backdrop-a"),$("backdrop-b")];
+  const showNext=()=>{
+    backdropIndex=(backdropIndex+1)%BACKDROP_IMAGES.length;
+    const next=1-activeBackdropLayer, layer=layers[next];
+    layer.style.backgroundImage="linear-gradient(180deg,rgba(14,10,28,.20),rgba(14,10,28,.58)),url("+JSON.stringify(BACKDROP_IMAGES[backdropIndex])+")";
+    layer.classList.add("active");
+    layers[activeBackdropLayer].classList.remove("active");
+    activeBackdropLayer=next;
+  };
+  showNext();
+  setInterval(showNext,15000);
+}
+
 /* ---------- boot ---------- */
 function boot(){
   buildKeyboard();
@@ -2234,9 +2257,9 @@ function boot(){
   bindUI();
   applySettings();
   renderLevels();
-  showScreen("start");
+  startBackdropRotation();
   $("practice").setAttribute("aria-live", "off");
-  document.querySelector("#btn-start").focus({preventScroll:true});
+  startLevel(1);
 }
 if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
 else boot();
